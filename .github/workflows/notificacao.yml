@@ -13,3 +13,34 @@ jobs:
         with:
           webhook_url: ${{ secrets.DISCORD_WEBHOOK }} 
           message: "Tarefa de GitHub Actions concluída por Bruna Oliveira!"
+
+name: CI Disciplina - Testes Unitarios
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened] # "synchronize" significa que roda a cada novo commit na PR
+
+jobs:
+  testes:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Baixar codigo do repo
+        uses: actions/checkout@v4
+
+      - name: Instalar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Instalar dependencias
+        run: npm install
+
+      - name: Executar Testes Unitarios
+        run: npm test # O GitHub vai ler seus 5 testes aqui
+
+      - name: Notificar Sucesso no Discord
+        if: success()
+        run: |
+          curl -H "Content-Type: application/json" \
+          -d '{"content": "✅ Testes aprovados! O novo commit está seguro."}' \
+          ${{ secrets.DISCORD_WEBHOOK }}
