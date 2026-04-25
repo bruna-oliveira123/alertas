@@ -1,0 +1,15 @@
+name: Alerta Discord
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  alertar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Notificando o Discord
+        uses: appleboy/discord-action@master
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          message: "Tarefa de GitHub Actions concluída por Bruna Oliveira!"
