@@ -1,7 +1,9 @@
 name: CI Disciplina - Testes e Alertas
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main", "criar-um-branch-teste-pr" ]
+  pull_request:
+    branches: [ "main", "criar-um-branch-teste-pr" ]
 
 jobs:
   executar-testes:
