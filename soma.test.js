@@ -1,4 +1,4 @@
-const soma = (a, b) => a + b;
+const soma = require('./soma');
 
 test('1. Soma de dois números positivos', () => {
   expect(soma(1, 2)).toBe(3);
