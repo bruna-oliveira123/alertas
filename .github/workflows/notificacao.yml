@@ -1,42 +1,20 @@
-name: CI Disciplina - Testes e Alertas
-
-on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+name: CI Alertas e Testes
+on: [push, pull_request]
 
 jobs:
-  build-and-test:
+  testes:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout do código
-        uses: actions/checkout@v4
-
-      - name: Configurar Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: '20'
-
-      - name: Instalar dependências
-        run: npm install
-
-      - name: Executar os 5 Testes Unitários
-        run: npm test
-
-      - name: Notificar Sucesso no Discord
-        if: success()
+      - run: npm install
+      - run: npm test
+      - name: Notificar Discord
+        if: always()
         run: |
           curl -H "Content-Type: application/json" \
           -X POST \
-          -d '{"content": "✅ Sucesso! Os testes passaram e o sistema está estável."}' \
-          ${{ secrets.DISCORD_WEBHOOK }}
-
-      - name: Notificar Falha no Discord
-        if: failure()
-        run: |
-          curl -H "Content-Type: application/json" \
-          -X POST \
-          -d '{"content": "❌ Atenção! Os testes falharam na última atualização."}' \
+          -d "{\"content\": \"Projeto Alertas: Os testes terminaram com status ${{ job.status }}\"}" \
           ${{ secrets.DISCORD_WEBHOOK }}
