@@ -1,0 +1,12 @@
+{
+  "name": "projeto-alertas",
+  "version": "1.0.0",
+  "description": "Sistema de alertas com testes unitários",
+  "main": "soma.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "devDependencies": {
+    "jest": "^29.0.0"
+  }
+}
