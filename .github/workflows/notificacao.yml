@@ -1,38 +1,31 @@
 name: CI Disciplina - Testes e Alertas
 on:
   push:
-    branches: [ "main", "patch-1", "criar-um-branch-teste-pr" ]
+    branches: [ "main", "patch-1" ] 
   pull_request:
-    branches: [ "main", "patch-1", "criar-um-branch-teste-pr" ]
+    branches: [ "main", "patch-1" ]
 
 jobs:
-  executar-testes:
+  projeto-bruna:
     runs-on: ubuntu-latest
     steps:
-      - name: Baixar codigo do GitHub
+      - name: Baixar Código
         uses: actions/checkout@v4
 
-      - name: Instalar Node.js
+      - name: Configurar Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '24'
+          node-version: '20'
 
-      - name: Instalar dependencias (Jest)
+      - name: Instalar o Jest
         run: npm install
 
-      - name: Rodar os 5 Testes
+      - name: Executar os 5 Testes Unitários
         run: npm test
 
-      - name: Alerta no Discord
-        if: always()
-        run: |
-          if [ "${{ job.status }}" == "success" ]; then
-            STATUS_PT="sucesso ✅"
-          else
-            STATUS_PT="falha ❌"
-          fi
-          
-          curl -H "Content-Type: application/json" \
-          -X POST \
-          -d "{\"content\": \"Relatório de Testes da Bruna: O status final foi $STATUS_PT!\"}" \
-          ${{ secrets.DISCORD_WEBHOOK }}
+      - name: Notificar o Discord
+        if: success() # Só avisa se os testes passarem!
+        uses: appleboy/discord-action@master
+        with:
+          webhook_url: ${{ secrets.DISCORD_WEBHOOK }}
+          message: "✅ Testes Unitários Aprovados! Tarefa concluída por Bruna Oliveira."
