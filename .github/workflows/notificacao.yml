@@ -13,23 +13,23 @@ jobs:
       - name: Instalar Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '24'
 
       - name: Instalar dependencias (Jest)
         run: npm install
 
       - name: Rodar os 5 Testes
         run: npm test
-- name: Alerta no Discord
+
+      - name: Alerta no Discord
         if: always()
         run: |
-          # Criando uma variável para traduzir o status
           if [ "${{ job.status }}" == "success" ]; then
             STATUS_PT="sucesso ✅"
           else
             STATUS_PT="falha ❌"
           fi
-
+          
           curl -H "Content-Type: application/json" \
           -X POST \
           -d "{\"content\": \"Relatório de Testes da Bruna: O status final foi $STATUS_PT!\"}" \
