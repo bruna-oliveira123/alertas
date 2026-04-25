@@ -20,10 +20,17 @@ jobs:
 
       - name: Rodar os 5 Testes
         run: npm test
+- name: Alerta no Discord
+        if: always()
+        run: |
+          # Criando uma variável para traduzir o status
+          if [ "${{ job.status }}" == "success" ]; then
+            STATUS_PT="sucesso ✅"
+          else
+            STATUS_PT="falha ❌"
+          fi
 
-      - name: Alerta no Discord
-        if: always() # ele te avisa se passou OU se falhou
-        uses: appleboy/discord-action@master
-        with:
-          webhook_url: ${{ secrets.DISCORD_WEBHOOK }}
-          message: "Relatório de Testes da Bruna: O status final foi ${{ job.status }}!"
+          curl -H "Content-Type: application/json" \
+          -X POST \
+          -d "{\"content\": \"Relatório de Testes da Bruna: O status final foi $STATUS_PT!\"}" \
+          ${{ secrets.DISCORD_WEBHOOK }}
