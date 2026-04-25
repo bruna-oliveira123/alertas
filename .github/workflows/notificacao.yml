@@ -1,46 +1,42 @@
-name: Alerta Discord
+name: CI Disciplina - Testes e Alertas
 
 on:
   push:
     branches: [ "main" ]
-
-jobs:
-  alertar:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Notificando o Discord
-        uses: appleboy/discord-action@master
-        with:
-          webhook_url: ${{ secrets.DISCORD_WEBHOOK }} 
-          message: "Tarefa de GitHub Actions concluída por Bruna Oliveira!"
-
-name: CI Disciplina - Testes Unitarios
-
-on:
   pull_request:
-    types: [opened, synchronize, reopened] # "synchronize" significa que roda a cada novo commit na PR
+    branches: [ "main" ]
 
 jobs:
-  testes:
+  build-and-test:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Baixar codigo do repo
+      - name: Checkout do código
         uses: actions/checkout@v4
 
-      - name: Instalar Node.js
+      - name: Configurar Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
 
-      - name: Instalar dependencias
+      - name: Instalar dependências
         run: npm install
 
-      - name: Executar Testes Unitarios
-        run: npm test # O GitHub vai ler seus 5 testes aqui
+      - name: Executar os 5 Testes Unitários
+        run: npm test
 
       - name: Notificar Sucesso no Discord
         if: success()
         run: |
           curl -H "Content-Type: application/json" \
-          -d '{"content": "✅ Testes aprovados! O novo commit está seguro."}' \
+          -X POST \
+          -d '{"content": "✅ Sucesso! Os testes passaram e o sistema está estável."}' \
+          ${{ secrets.DISCORD_WEBHOOK }}
+
+      - name: Notificar Falha no Discord
+        if: failure()
+        run: |
+          curl -H "Content-Type: application/json" \
+          -X POST \
+          -d '{"content": "❌ Atenção! Os testes falharam na última atualização."}' \
           ${{ secrets.DISCORD_WEBHOOK }}
