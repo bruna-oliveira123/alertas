@@ -1,8 +1,4 @@
 {
-  "name": "sistema-alertas-disciplina",
-  "version": "1.0.0",
-  "description": "Projeto para automação de testes e alertas",
-  "main": "soma.js",
   "scripts": {
     "test": "jest"
   },
