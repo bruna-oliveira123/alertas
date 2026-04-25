@@ -1,0 +1,29 @@
+name: CI Disciplina - Testes e Alertas
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  executar-testes:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Baixar codigo do GitHub
+        uses: actions/checkout@v4
+
+      - name: Instalar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Instalar dependencias (Jest)
+        run: npm install
+
+      - name: Rodar os 5 Testes
+        run: npm test
+
+      - name: Alerta no Discord
+        if: always() # ele te avisa se passou OU se falhou
+        uses: appleboy/discord-action@master
+        with:
+          webhook_url: ${{ secrets.DISCORD_WEBHOOK }}
+          message: "Relatório de Testes da Bruna: O status final foi ${{ job.status }}!"
