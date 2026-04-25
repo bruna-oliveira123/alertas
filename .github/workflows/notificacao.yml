@@ -1,15 +1,29 @@
-name: Alerta Discord
-
+name: CI Disciplina - Testes e Alertas
 on:
   push:
     branches: [ "main" ]
 
 jobs:
-  alertar:
+  projeto-bruna:
     runs-on: ubuntu-latest
     steps:
-      - name: Notificando o Discord
+      - name: Baixar Código
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Instalar o Jest
+        run: npm install
+
+      - name: Executar os 5 Testes Unitários
+        run: npm test
+
+      - name: Notificar o Discord
+        if: success() # Só avisa se os testes passarem!
         uses: appleboy/discord-action@master
         with:
-          webhook_url: ${{ secrets.DISCORD_WEBHOOK }} 
-          message: "Tarefa de GitHub Actions concluída por Bruna Oliveira!"
+          webhook_url: ${{ secrets.DISCORD_WEBHOOK }}
+          message: "✅ Testes Unitários Aprovados! Tarefa concluída por Bruna Oliveira."
